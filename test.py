@@ -1,7 +1,10 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from pathlib import Path
-import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 # chrome driver
 chromeDriver = Path('C:\ChromeDriver\chromedriver.exe')
 driver = webdriver.Chrome(chromeDriver)
@@ -17,5 +20,17 @@ searchBox.send_keys('Muse')
 searchButton = driver.find_element_by_xpath(
     '//*[@id="search-icon-legacy"]').click()
 
-time.sleep(10)
-driver.quit()
+#white while it loads the content
+try:
+    contents = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "contents"))
+    )
+    
+    titles = contents.find_elements_by_tag_name("video-title")
+    for title in titles:
+        tit = title.find_elements_by_id("title-wrapper")
+        print(tit.text)
+finally:
+    driver.quit()
+
+
